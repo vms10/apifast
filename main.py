@@ -1,6 +1,7 @@
 # archivo principal
 import os
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile,HTTPException
+from fastapi.responses import FileResponse
 from typing import Annotated
 app = FastAPI()
 
@@ -48,20 +49,13 @@ async def upload_file(
 
 
 @app.get("/files/{file_name}")
-async def contenido_archivo(file_name):
-    carpeta = "files"
-    
-    # Verifica que la carpeta exista
-    if not os.path.exists(carpeta):
-        return {"error": f"La carpeta '{carpeta}' no existe."}
+async def contenido_archivo(file_name:str):
+    path = os.path.join("files", file_name)  # carpeta hardcodeada
+    if not os.path.exists(path) or not os.path.isfile(path):
+        raise HTTPException(status_code=404, detail="Archivo no encontrado")
 
-    # Lista solo los archivos dentro de la carpeta
-    archivos = [
-        f for f in os.listdir(carpeta)
-        if os.path.isfile(os.path.join(carpeta, file_name))
-    ]
-    return {"archivos": os.path.join(carpeta, file_name)}
-
+    # Fuerza descarga con nombre del archivo
+    return FileResponse(path, media_type="application/octet-stream", filename=file_name)
 
 
 
