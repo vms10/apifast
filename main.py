@@ -1,19 +1,14 @@
 # archivo principal
 import os
-<<<<<<< HEAD
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import PlainTextResponse
-=======
 from fastapi import FastAPI, File, UploadFile,HTTPException
 from fastapi.responses import FileResponse
->>>>>>> bc1bd503fd64586b930f1fc971d84c072a1337c5
 from typing import Annotated
 app = FastAPI()
 
 @app.get("/hola")
 async def prueba_root():
     return {"message": "Accediste al endpoint de prueba"}
-####### 2.a) 
+
 @app.get("/files")
 async def buscar_archivos():
     carpeta = "files"
@@ -29,7 +24,12 @@ async def buscar_archivos():
     ]
     return {"archivos": archivos}
 
-####### 2.b) 
+
+
+
+
+
+# Endpoint que guarda el archivo en la carpeta "files"
 @app.post("/files")
 async def upload_file(
     file: Annotated[UploadFile, File(...)]
@@ -47,31 +47,12 @@ async def upload_file(
 
     return {"message": f"Archivo guardado como {save_path}", "size": len(content)}
 
-####### 2.c)
-@app.get("/files/{file_name}")
-<<<<<<< HEAD
-async def contenido_archivo(file_name):
-    carpeta = "files"
-    
-    # Verifica que la carpeta exista
-    if not os.path.exists(carpeta):
-        return {"error": f"La carpeta '{carpeta}' no existe."}
 
-    # Lista solo los archivos dentro de la carpeta
-    archivo = os.path.join(carpeta, file_name)
-        # Lee y devuelve el contenido del archivo como texto
-    try:
-        with open(archivo, "r", encoding="utf-8") as f:
-            contenido = f.read()
-        return PlainTextResponse(content=contenido)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al leer el archivo: {e}")
-=======
+@app.get("/files/{file_name}")
 async def contenido_archivo(file_name:str):
     path = os.path.join("files", file_name)  # carpeta hardcodeada
     if not os.path.exists(path) or not os.path.isfile(path):
         raise HTTPException(status_code=404, detail="Archivo no encontrado")
->>>>>>> bc1bd503fd64586b930f1fc971d84c072a1337c5
 
     # Fuerza descarga con nombre del archivo
     return FileResponse(path, media_type="application/octet-stream", filename=file_name)
