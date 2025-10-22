@@ -2,6 +2,8 @@
 import os
 from fastapi import FastAPI, File, UploadFile,HTTPException
 from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import PlainTextResponse
 from typing import Annotated
 app = FastAPI()
 
@@ -47,7 +49,7 @@ async def upload_file(
 
     return {"message": f"Archivo guardado como {save_path}", "size": len(content)}
 
-# te descarga el archivo
+
 @app.get("/files/{file_name}")
 async def contenido_archivo(file_name:str):
     path = os.path.join("files", file_name)  # carpeta hardcodeada
@@ -57,6 +59,19 @@ async def contenido_archivo(file_name:str):
     # Fuerza descarga con nombre del archivo
     return FileResponse(path, media_type="application/octet-stream", filename=file_name)
 
-
+@app.get("/files/{file_name}") 
+async def contenido_archivo(file_name): 
+    carpeta = "files" 
+    # Verifica que la carpeta exista 
+    if not os.path.exists(carpeta): 
+        return {"error": f"La carpeta '{carpeta}' no existe."} # Lista solo los archivos dentro de la carpeta 
+    archivo = os.path.join(carpeta, file_name)
+      # Lee y devuelve el contenido del archivo como texto
+    try:
+        with open(archivo, "r", encoding="utf-8") as f:
+            contenido = f.read()
+        return PlainTextResponse(content=contenido)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al leer el archivo: {e}")
 
 
