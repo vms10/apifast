@@ -1,7 +1,12 @@
 # archivo principal
 import os
+<<<<<<< HEAD
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import PlainTextResponse
+=======
+from fastapi import FastAPI, File, UploadFile,HTTPException
+from fastapi.responses import FileResponse
+>>>>>>> bc1bd503fd64586b930f1fc971d84c072a1337c5
 from typing import Annotated
 app = FastAPI()
 
@@ -44,6 +49,7 @@ async def upload_file(
 
 ####### 2.c)
 @app.get("/files/{file_name}")
+<<<<<<< HEAD
 async def contenido_archivo(file_name):
     carpeta = "files"
     
@@ -60,7 +66,15 @@ async def contenido_archivo(file_name):
         return PlainTextResponse(content=contenido)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al leer el archivo: {e}")
+=======
+async def contenido_archivo(file_name:str):
+    path = os.path.join("files", file_name)  # carpeta hardcodeada
+    if not os.path.exists(path) or not os.path.isfile(path):
+        raise HTTPException(status_code=404, detail="Archivo no encontrado")
+>>>>>>> bc1bd503fd64586b930f1fc971d84c072a1337c5
 
+    # Fuerza descarga con nombre del archivo
+    return FileResponse(path, media_type="application/octet-stream", filename=file_name)
 
 
 
