@@ -24,4 +24,6 @@ Te devuelve el contenido de ese archivo
 `pip list`
 
 `pip freeze > requirements.txt`
- 
+
+ ## Para la parte de render logré deployear en:
+ https://apifast-m5ay.onrender.com
